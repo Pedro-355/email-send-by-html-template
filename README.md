@@ -29,7 +29,7 @@ npx ts-node send-emails.ts
 ```
 
 
-# está configurado para emails de altra prioridade, caso não seja essa função deve ser alterada 
+# esta configurado para emails de altra prioridade, caso não seja essa função deve ser alterada 
 ```ts
 async function sendEmails() {
     const recipients = await loadRecipients();
