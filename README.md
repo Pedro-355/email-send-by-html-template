@@ -27,3 +27,50 @@ npm install --save-dev @types/fs-extra @types/nodemailer
 ```bash
 npx ts-node send-emails.ts
 ```
+
+
+# está configurado para emails de altra prioridade, caso não seja essa função deve ser alterada 
+```ts
+async function sendEmails() {
+    const recipients = await loadRecipients();
+    const htmlTemplate = await loadTemplate();
+  
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false, // STARTTLS
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        ciphers: 'SSLv3'
+      }
+    });
+  
+    for (const recipient of recipients) {
+      const htmlContent = htmlTemplate.replace('{{name}}', recipient.name);
+  
+      const mailOptions = {
+        from: `"Seu Nome" <${process.env.EMAIL_USER}>`,
+        to: recipient.email,
+        subject: 'Politica de acessos',
+        html: htmlContent,
+        headers: {
+          'X-Priority': '1',
+          'X-MSMail-Priority': 'High',
+          'Importance': 'High'
+        }
+      };
+  
+      try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`E-mail enviado para ${recipient.email}: ${info.response}`);
+      } catch (error) {
+        console.error(`Erro ao enviar para ${recipient.email}:`, error);
+      }
+    }
+  }
+```
+
+## caso não seja via outlook essa função tambem deve ser alterada para os padroes do gmail
